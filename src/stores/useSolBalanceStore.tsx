@@ -15,7 +15,7 @@ const useUserSOLBalanceStore = create<UserSOLBalanceStore>((set, _get) => ({
         publicKey,
         'confirmed'
       );
-      balance = balance ;
+      balance = balance / LAMPORTS_PER_SOL;
     } catch (e) {
       console.log(`error getting balance: `, e);
     }

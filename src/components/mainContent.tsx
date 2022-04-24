@@ -8,7 +8,7 @@ import { notify } from "../utils/notifications";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
 // Store
-import UserSOLBalanceStore from "../stores/useSolBalanceStore";
+import useUserSOLBalanceStore from "../stores/useSolBalanceStore";
 import useFirebaseStore from "../stores/useFirebaseStore";
 
 import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
@@ -20,13 +20,13 @@ interface MainContentProps {
 export const MainContent: FC<MainContentProps> = (props) => {
   const { connection } = useConnection();
   const { publicKey } = useWallet();
-  const { getUserSOLBalance } = UserSOLBalanceStore();
+  const { getUserSOLBalance } = useUserSOLBalanceStore();
   const { getBids, placeBid, getListings} = useFirebaseStore();
   const topBidder = useFirebaseStore((state) => state.topBidder);
   const listings = useFirebaseStore((state) => state.listing);
 
   const bids = useFirebaseStore((state) => state.bids);
-  const userTokenBalance = UserSOLBalanceStore((s) => s.balance);
+  const userSolanaBalance = useUserSOLBalanceStore((s) => s.balance);
   const filteredBids = useFirebaseStore((state) => state.filteredBids);
 
   const [bidAmountCounter, setBidAmountCounter] = useState(600);
@@ -49,7 +49,7 @@ export const MainContent: FC<MainContentProps> = (props) => {
   };
 
   const onPlaceBid = () => {
-    if (highestBid > bidAmountCounter || (listings.length !== 0 ? listings[0].bidAmount > bidAmountCounter :"") || (userTokenBalance !== 0 ? !((userTokenBalance /LAMPORTS_PER_SOL)> bidAmountCounter ) : true ) )
+    if (highestBid > bidAmountCounter || (listings.length !== 0 ? listings[0].bidAmount > bidAmountCounter :"") || (userSolanaBalance !== 0 ? !((userSolanaBalance /LAMPORTS_PER_SOL)> bidAmountCounter ) : true ) )
       throw new notify({
         type: "error",
         message: `Not enough or Exceeds wallet SOL!`,
@@ -67,51 +67,17 @@ export const MainContent: FC<MainContentProps> = (props) => {
    
   };
 
-  const verifyTokenBalance = async () => {
-    getBids();
-    let novaxMintAccount = "NovNrxPNjmLVFscH5rjMbec7C4BdAHms9WK21xjsP3p";
 
-    const userTokenList = await checkToken(connection, publicKey);
-    if (userTokenList !== undefined) {
-      for (let i = 0; i < userTokenList.length; i++) {
-        let mintAcc = new PublicKey(
-          userTokenList[i]["mint"].slice(0, 32)
-        ).toBase58();
-        if (novaxMintAccount === mintAcc) {
-          getUserSOLBalance(
-            new PublicKey(userTokenList[i]["pubkey"]),
-            connection
-          );
-        }
-        // console.log("array of tokens >>", userTokenList[i]);
-      }
-    }
-  };
 
-  let tableRows = filteredBids.map((item) => {
-    return (
-      <tr className="border-b border-opacity-20 dark:border-coolGray-700 dark:bg-coolGray-900 text-left">
-        <td className="p-3">
-          <p>{item.wallet}</p>
-        </td>
-
-        <td className="p-2 text-right">
-          <p>SOL {item.bidAmount}</p>
-        </td>
-        <td className="p-3 text-right">
-          <span className="text-right px-3 py-1 font-semibold rounded-md dark:bg-violet-400 dark:text-coolGray-900">
-            <span>Placed Bid</span>
-          </span>
-        </td>
-      </tr>
-    );
-  });
 
   
 
   useEffect(() => {
     getListings();
-    verifyTokenBalance();
+    getUserSOLBalance(
+      publicKey,
+      connection
+    );
     if (bids.length > 0) {
       let amounts = [];
       for (let i = 0; i < bids.length; i++) {
@@ -151,7 +117,7 @@ export const MainContent: FC<MainContentProps> = (props) => {
             </p>
 
             <p className="text-indigo-500 text-md font-medium">
-            ◎ {userTokenBalance / LAMPORTS_PER_SOL}
+            ◎ {userSolanaBalance}
             </p>
           </div>
         </div>
@@ -213,7 +179,7 @@ export const MainContent: FC<MainContentProps> = (props) => {
                     ) : (
                       ""
                     )} */}
-                    Bidding starts at  {listings.length !== 0 ? listings[0].bidAmount : ""} ◎
+                    Bidding starts at   ◎ {listings.length !== 0 ? listings[0].bidAmount : ""}
                   </p>
                 </div>
               </div>
@@ -232,7 +198,7 @@ export const MainContent: FC<MainContentProps> = (props) => {
                 bidPermission={
                   !(
                     (listings.length !== 0 ? listings[0].bidAmount : 0) >
-                    userTokenBalance / LAMPORTS_PER_SOL
+                    userSolanaBalance 
                   )
                 }
               />
