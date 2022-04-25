@@ -29,7 +29,7 @@ function Admin(props) {
     if (
       !wallet.publicKey ||
       wallet.publicKey.toBase58() !==
-        "ZRq9NgBsqtQ3HkK1tUk9pkSj7vF7PhTi2jziuQRtPPp"
+        "HdPZPnYQMCxkJb89Ywg2FBpmeEPySHS32q7Er4Lm5S6e"
     )
       throw new notify({
         type: "error",
@@ -55,7 +55,7 @@ function Admin(props) {
           wallet.publicKey.toBase58() !==
           //HdPZPnYQMCxkJb89Ywg2FBpmeEPySHS32q7Er4Lm5S6e
           //ZRq9NgBsqtQ3HkK1tUk9pkSj7vF7PhTi2jziuQRtPPp
-            "ZRq9NgBsqtQ3HkK1tUk9pkSj7vF7PhTi2jziuQRtPPp" ? (
+            "HdPZPnYQMCxkJb89Ywg2FBpmeEPySHS32q7Er4Lm5S6e" ? (
             ""
           ) : (
             <>
@@ -94,7 +94,7 @@ function Admin(props) {
           {!wallet.publicKey ||
           wallet.publicKey.toBase58() !==
             
-            "ZRq9NgBsqtQ3HkK1tUk9pkSj7vF7PhTi2jziuQRtPPp" ? (
+            "HdPZPnYQMCxkJb89Ywg2FBpmeEPySHS32q7Er4Lm5S6e" ? (
             " "
           ) : (
             <form
@@ -156,7 +156,8 @@ function Admin(props) {
                 </label>
                 <input
                   onChange={(e) => setAmount(e.target.value)}
-                  type="text"
+                  type="number" 
+                  step="any"
                   name="minBid"
                   id="minBid"
                   required
@@ -165,12 +166,13 @@ function Admin(props) {
                 ></input>
               </div>
               <div className="space-y-1 text-sm">
-                <label htmlFor="time" className="block dark:text-black-400">
+                <label htmlFor="min" className="block dark:text-black-400">
                   MIN BID INCREASE 
                 </label>
                 <input
-                  type="text"
-                  name="datetime"
+                  type="number" 
+                  step="any"
+                  name="min"
                   id="bid"
                   placeholder="Min SOL increase"
                   className="input w-full px-4 py-3 rounded-md bg-white text-gray-700"

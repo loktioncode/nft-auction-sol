@@ -29,19 +29,15 @@ const db = getFirestore(app);
 
 const useFirebaseStore = create((set, _get) => ({
   bids: [],
-  filteredBids: [],
   listing: [],
   topBidder: [],
   getBids: () => {
-    onSnapshot(collection(db, "bids"), (snapshot) => {
+    onSnapshot(collection(db, "solbids"), (snapshot) => {
       set({ bids: snapshot.docs.map((doc) => doc.data()) });
-    });
-    onSnapshot(query(collection(db, "bids"), limit(10)), (snapshot) => {
-      set({ filteredBids: snapshot.docs.map((doc) => doc.data()) });
     });
   },
   placeBid: async (amount, publicKey) => {
-    const docRef = await addDoc(collection(db, "bids"), {
+    const docRef = await addDoc(collection(db, "solbids"), {
       bidAmount: amount,
       wallet: publicKey,
     });
@@ -61,12 +57,12 @@ const useFirebaseStore = create((set, _get) => ({
       bidAmount: amount,
       minIncrease: minIncrease,
     };
-    updateDoc(doc(db, "listings", "nft"), data).then(
+    updateDoc(doc(db, "sollistings", "solnft"), data).then(
       notify({ type: "success", message: `Listing update successful!!` })
     );
   },
   getListings: () => {
-    onSnapshot(collection(db, "listings"), (snapshot) => {
+    onSnapshot(collection(db, "sollistings"), (snapshot) => {
       set({ listing: snapshot.docs.map((doc) => doc.data()) });
     });
   },
@@ -74,15 +70,13 @@ const useFirebaseStore = create((set, _get) => ({
     let data = {
       state: false,
     };
-    await updateDoc(doc(db, "listings", "nft"), data).then(
+    await updateDoc(doc(db, "sollistings", "solnft"), data).then(
       notify({ type: "success", message: `Bid Closed successful!!` })
     );
-    onSnapshot(collection(db, "listings"), (snapshot) => {
-     snapshot.docs.map((doc) => doc.ref.delete) 
-    });
+    
   },
   winner: () => {
-    onSnapshot(query(collection(db, "bids"),orderBy("bidAmount", "desc"), limit(1)), (snapshot) => {
+    onSnapshot(query(collection(db, "solbids"),orderBy("bidAmount", "desc"), limit(1)), (snapshot) => {
       set({ topBidder: snapshot.docs.map((doc) => doc.data()) });
     });
   },

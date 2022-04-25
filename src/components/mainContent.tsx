@@ -21,13 +21,13 @@ export const MainContent: FC<MainContentProps> = (props) => {
   const { connection } = useConnection();
   const { publicKey } = useWallet();
   const { getUserSOLBalance } = useUserSOLBalanceStore();
-  const { getBids, placeBid, getListings} = useFirebaseStore();
+  const { getBids, placeBid, getListings,winner} = useFirebaseStore();
   const topBidder = useFirebaseStore((state) => state.topBidder);
   const listings = useFirebaseStore((state) => state.listing);
 
   const bids = useFirebaseStore((state) => state.bids);
   const userSolanaBalance = useUserSOLBalanceStore((s) => s.balance);
-  const filteredBids = useFirebaseStore((state) => state.filteredBids);
+
 
   const [bidAmountCounter, setBidAmountCounter] = useState(600);
   const [highestBid, setHighestBid] = useState(0);
@@ -45,17 +45,17 @@ export const MainContent: FC<MainContentProps> = (props) => {
   };
 
   const customBidAmount = (e) => {
-    setBidAmountCounter(parseInt(e.target.value));
+    setBidAmountCounter(parseFloat(e.target.value));
   };
 
   const onPlaceBid = () => {
-    if (highestBid > bidAmountCounter || (listings.length !== 0 ? listings[0].bidAmount > bidAmountCounter :"") || (userSolanaBalance !== 0 ? !((userSolanaBalance /LAMPORTS_PER_SOL)> bidAmountCounter ) : true ) )
+    if (highestBid > bidAmountCounter || (listings.length !== 0 ? listings[0].bidAmount > bidAmountCounter :"") || (userSolanaBalance !== 0 ? !((userSolanaBalance)> bidAmountCounter ) : true ) )
       throw new notify({
         type: "error",
         message: `Not enough or Exceeds wallet SOL!`,
       });
 
-    if ((listings.length !== 0 ? ((parseInt(listings[0].minIncrease) + highestBid ) < bidAmountCounter) :false)) {
+    if ((listings.length !== 0 ? ((parseFloat(listings[0].minIncrease) + highestBid ) < bidAmountCounter) :false)) {
       placeBid(bidAmountCounter, publicKey.toBase58());
     } else {
       throw new notify({
@@ -74,6 +74,8 @@ export const MainContent: FC<MainContentProps> = (props) => {
 
   useEffect(() => {
     getListings();
+    getBids();
+    winner();
     getUserSOLBalance(
       publicKey,
       connection
@@ -97,7 +99,7 @@ export const MainContent: FC<MainContentProps> = (props) => {
             </p>
 
             <p className="text-indigo-500 text-xl font-medium">
-            ◎ {highestBid}
+            ◎ {topBidder.length != 0 ? topBidder[0].bidAmount: 0}
             </p>
           </div>
         </div>
@@ -174,7 +176,7 @@ export const MainContent: FC<MainContentProps> = (props) => {
                     {/* {listings.length !== 0 ? (
                       <Countdown
                      
-                        date={Date.now() + parseInt(listings[0].time)}
+                        date={Date.now() + parseFloat(listings[0].time)}
                       />
                     ) : (
                       ""
@@ -210,25 +212,7 @@ export const MainContent: FC<MainContentProps> = (props) => {
             </div>
           </div>
         </div>
-        {/* <div className="container p-2 mx-auto sm:p-4 dark:text-coolGray-100">
-          <h2 className="mb-4 text-2xl font-semibold leading-tight">
-            Latest Bids
-          </h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-xs">
-              <thead className="dark:bg-coolGray-700">
-                <tr className="text-left ">
-                  <th className="p-3">Bidder Wallet</th>
-
-                  <th className="p-3 text-right">Amount</th>
-                  <th className="p-3 text-right">Status</th>
-                </tr>
-              </thead>
-
-              <tbody>{bids.length > 0 ? tableRows : ""}</tbody>
-            </table>
-          </div>
-        </div> */}
+    
       </section>
     </div>
   );
