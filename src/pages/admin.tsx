@@ -29,7 +29,7 @@ function Admin(props) {
     if (
       !wallet.publicKey ||
       wallet.publicKey.toBase58() !==
-        "HdPZPnYQMCxkJb89Ywg2FBpmeEPySHS32q7Er4Lm5S6e"
+        "ZRq9NgBsqtQ3HkK1tUk9pkSj7vF7PhTi2jziuQRtPPp"
     )
       throw new notify({
         type: "error",
@@ -55,7 +55,7 @@ function Admin(props) {
           wallet.publicKey.toBase58() !==
           //HdPZPnYQMCxkJb89Ywg2FBpmeEPySHS32q7Er4Lm5S6e
           //ZRq9NgBsqtQ3HkK1tUk9pkSj7vF7PhTi2jziuQRtPPp
-            "HdPZPnYQMCxkJb89Ywg2FBpmeEPySHS32q7Er4Lm5S6e" ? (
+            "ZRq9NgBsqtQ3HkK1tUk9pkSj7vF7PhTi2jziuQRtPPp" ? (
             ""
           ) : (
             <>
@@ -94,7 +94,7 @@ function Admin(props) {
           {!wallet.publicKey ||
           wallet.publicKey.toBase58() !==
             
-            "HdPZPnYQMCxkJb89Ywg2FBpmeEPySHS32q7Er4Lm5S6e" ? (
+            "ZRq9NgBsqtQ3HkK1tUk9pkSj7vF7PhTi2jziuQRtPPp" ? (
             " "
           ) : (
             <form
