@@ -16,12 +16,7 @@ import { notify } from "../utils/notifications";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyB9J6K4rMZiRAyGz2QaQ7CmyXR7TX-ifhA",
-  authDomain: "solot-6fe85.firebaseapp.com",
-  projectId: "solot-6fe85",
-  storageBucket: "solot-6fe85.appspot.com",
-  messagingSenderId: "783738821563",
-  appId: "1:783738821563:web:80bf3f97215a85d97b029e",
+
 };
 
 const app = initializeApp(firebaseConfig);
